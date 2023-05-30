@@ -1,0 +1,17 @@
+name: Build docker image
+
+on: [push]
+
+jobs:
+  docker:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/elixir:latest
+            ghcr.io/${{ github.repository_owner }}/elixir:1.12.3-otp-23.3
+            ghcr.io/${{ github.repository_owner }}/elixir:1.12.3-otp-23
