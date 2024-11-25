@@ -5,6 +5,11 @@ on: [push]
 jobs:
   docker:
     runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        elixir: ["1.12.3"]
+        erlang: ["23.3"]
+        ubuntu: ["20.04"]
     steps:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -16,13 +21,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Build and Push
-        uses: docker/build-push-action@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/elixir:latest
-            ghcr.io/${{ github.repository_owner }}/elixir:1.12.3-otp-23.3
-            ghcr.io/${{ github.repository_owner }}/elixir:1.12.3-otp-23
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+
+      - name: Build and Push Docker image
+        run: |
+          python build.py \
+            --elixir ${{ matrix.elixir }} \
+            --erlang ${{ matrix.erlang }} \
+            --ubuntu ${{ matrix.ubuntu }} \
+            --repository ghcr.io/${{ github.repository_owner }} \
+            --push
