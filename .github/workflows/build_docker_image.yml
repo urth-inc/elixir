@@ -7,9 +7,10 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        elixir: ["1.12.3"]
-        erlang: ["23.3"]
-        ubuntu: ["20.04", "22.04"]
+        include:
+          - elixir: "1.12.3"
+            erlang: "23.3"
+            ubuntu: "20.04" # openssl 1.x is not available on 22.04
     steps:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
