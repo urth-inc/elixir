@@ -9,7 +9,7 @@ jobs:
       matrix:
         elixir: ["1.12.3"]
         erlang: ["23.3"]
-        ubuntu: ["20.04"]
+        ubuntu: ["20.04", "22.04"]
     steps:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -33,4 +33,5 @@ jobs:
             --erlang ${{ matrix.erlang }} \
             --ubuntu ${{ matrix.ubuntu }} \
             --repository ghcr.io/${{ github.repository_owner }} \
-            --push
+            --test \
+            ${{ github.ref == 'refs/heads/develop' && '--push' || '' }}

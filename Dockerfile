@@ -7,6 +7,8 @@ ARG ERLANG_DOWNLOAD_URL
 ARG ERLANG_DOWNLOAD_SHA256
 ARG ELIXIR_DOWNLOAD_URL
 ARG ELIXIR_DOWNLOAD_SHA256
+ARG BUILD_DEPS
+ARG RUNTIME_DEPS
 
 ENV LANG=C.UTF-8
 
@@ -14,14 +16,7 @@ ENV LANG=C.UTF-8
 RUN set -xe \
     && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        build-essential \
-        autoconf \
-        libncurses5-dev \
-        libssl-dev \
-        curl \
-        git \
-        ca-certificates \
-        wget \
+        ${BUILD_DEPS} \
     && curl -fSL -o otp-src.tar.gz "${ERLANG_DOWNLOAD_URL}" \
     && echo "${ERLANG_DOWNLOAD_SHA256}  otp-src.tar.gz" | sha256sum -c - \
     && mkdir -p /usr/src/otp \
@@ -46,6 +41,9 @@ RUN set -xe \
     && make install clean \
     && find /usr/local/src/elixir/ -type f -not -regex "/usr/local/src/elixir/lib/[^\/]*/lib.*" -exec rm -rf {} + \
     && find /usr/local/src/elixir/ -type d -depth -empty -delete \
+    && apt-get purge -y ${BUILD_DEPS} \
+    && apt-get install -y --no-install-recommends ${RUNTIME_DEPS} \
+    && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
