@@ -1,0 +1,47 @@
+[versions]
+
+[versions.erlang]
+
+[versions.erlang."23.3"]
+url = "https://github.com/erlang/otp/archive/OTP-23.3.tar.gz"
+sha256 = "a9dfe9ea762b9f06f67af6074bed0f75705e1f114b9c45634db7d7cac2a293da"
+
+[versions.elixir]
+
+[versions.elixir."1.12.3"]
+url = "https://github.com/elixir-lang/elixir/archive/v1.12.3.tar.gz"
+sha256 = "c5affa97defafa1fd89c81656464d61da8f76ccfec2ea80c8a528decd5cb04ad"
+
+[versions.ubuntu]
+
+[versions.ubuntu."20.04"]
+build_deps = [
+    "build-essential",
+    "autoconf",
+    "libncurses5-dev",
+    "libssl-dev",
+    "curl",
+    "git",
+    "ca-certificates",
+    "wget"
+]
+runtime_deps = [
+    "libssl1.1",
+    "libncurses5"
+]
+
+[versions.ubuntu."22.04"]
+build_deps = [
+    "build-essential",
+    "autoconf",
+    "libncurses5-dev",
+    "libssl-dev",
+    "curl",
+    "git",
+    "ca-certificates",
+    "wget"
+]
+runtime_deps = [
+    "libssl3",
+    "libncurses5"
+]

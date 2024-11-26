@@ -5,24 +5,34 @@ on: [push]
 jobs:
   docker:
     runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - elixir: "1.12.3"
+            erlang: "23.3"
+            ubuntu: "20.04" # NOTE: openssl 1.x is not default in 22.04
     steps:
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Build and Push
-        uses: docker/build-push-action@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/elixir:latest
-            ghcr.io/${{ github.repository_owner }}/elixir:1.12.3-otp-23.3
-            ghcr.io/${{ github.repository_owner }}/elixir:1.12.3-otp-23
+          python-version: "3.11"
+
+      - name: Build and Push Docker image
+        run: |
+          python build.py \
+            --elixir ${{ matrix.elixir }} \
+            --erlang ${{ matrix.erlang }} \
+            --ubuntu ${{ matrix.ubuntu }} \
+            --repository ghcr.io/${{ github.repository_owner }} \
+            --test \
+            ${{ github.ref == 'refs/heads/develop' && '--push' || '' }}
