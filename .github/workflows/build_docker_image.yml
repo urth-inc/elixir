@@ -10,7 +10,7 @@ jobs:
         include:
           - elixir: "1.12.3"
             erlang: "23.3"
-            ubuntu: "20.04" # openssl 1.x is not available on 22.04
+            ubuntu: "20.04" # NOTE: openssl 1.x is not default in 22.04
     steps:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
